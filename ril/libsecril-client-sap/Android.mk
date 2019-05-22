@@ -14,7 +14,7 @@ LOCAL_SHARED_LIBRARIES := \
     libhardware_legacy \
     liblog
 
-LOCAL_CFLAGS := 
+LOCAL_CFLAGS := -Wno-unused-variable
 
 LOCAL_MODULE:= libsecril-client-sap
 LOCAL_PRELINK_MODULE := false
