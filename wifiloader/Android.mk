@@ -12,6 +12,8 @@ LOCAL_SHARED_LIBRARIES := \
 LOCAL_C_INCLUDES := \
 	system/core/include
 
+LOCAL_CFLAGS := -Wno-unused-variable
+
 ifneq ($(WIFI_DRIVER_MODULE_NAME),)
 LOCAL_CFLAGS += -DWIFI_DRIVER_MODULE_NAME=\"$(WIFI_DRIVER_MODULE_NAME)\"
 endif
