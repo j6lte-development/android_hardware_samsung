@@ -480,7 +480,7 @@ static void samsung_power_hint(struct power_module *module,
 
     /* Bail out if low-power mode is active */
     if (current_power_profile == PROFILE_POWER_SAVE && hint != POWER_HINT_LOW_POWER
-            && hint != POWER_HINT_SET_PROFILE && hint != POWER_HINT_DISABLE_TOUCH) {
+            && hint != POWER_HINT_DISABLE_TOUCH) {
         ALOGV("%s: PROFILE_POWER_SAVE active, ignoring hint %d", __func__, hint);
         return;
     }
@@ -501,16 +501,6 @@ static void samsung_power_hint(struct power_module *module,
             ALOGV("%s: POWER_HINT_LAUNCH", __func__);
             send_boostpulse(samsung_pwr->boostpulse_fd);
             break;
-        case POWER_HINT_CPU_BOOST:
-            ALOGV("%s: POWER_HINT_CPU_BOOST", __func__);
-            int32_t duration_us = *((int32_t *)data);
-            send_boost(samsung_pwr->boost_fd, duration_us);
-            break;
-        case POWER_HINT_SET_PROFILE:
-            ALOGV("%s: POWER_HINT_SET_PROFILE", __func__);
-            int profile = *((intptr_t *)data);
-            set_power_profile(samsung_pwr, profile);
-            break;
         case POWER_HINT_DISABLE_TOUCH:
             ALOGV("%s: POWER_HINT_DISABLE_TOUCH", __func__);
             sysfs_write(samsung_pwr->touchscreen_power_path, data ? "0" : "1");
@@ -524,10 +514,6 @@ static void samsung_power_hint(struct power_module *module,
 static int samsung_get_feature(struct power_module *module __unused,
                                feature_t feature)
 {
-    if (feature == POWER_FEATURE_SUPPORTED_PROFILES) {
-        return PROFILE_MAX;
-    }
-
     return -1;
 }
 
@@ -565,9 +551,7 @@ struct samsung_power_module HAL_MODULE_INFO_SYM = {
 
         .init = samsung_power_init,
         .setInteractive = samsung_power_set_interactive,
-        .powerHint = samsung_power_hint,
-        .getFeature = samsung_get_feature,
-        .setFeature = samsung_set_feature
+        .powerHint = samsung_power_hint
     },
 
     .lock = PTHREAD_MUTEX_INITIALIZER,
